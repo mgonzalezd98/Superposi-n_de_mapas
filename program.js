@@ -25,39 +25,46 @@ var politicoLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}
 var topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; OpenTopoMap contributors'
-});
-
-// Agregar control deslizante de comparación
-var sideBySide = L.control.sideBySide(politicoLayer, baseLayer).addTo(map);
-
-// Control de capas
-var baseMaps = {
-    "OpenStreetMap": baseLayer,
-    "CartoDB Político": politicoLayer
-};
-
-var overlayMaps = {
-    "OpenTopoMap": topoLayer
-};
-
-L.control.layers(baseMaps, overlayMaps).addTo(map);
+}).addTo(map);
 
 // Agregar herramientas de dibujo con Geoman
 map.pm.addControls({
     position: 'topleft',
-    drawMarker: true,    // Dibujar puntos
-    drawPolyline: true,  // Dibujar líneas
-    drawPolygon: true,   // Dibujar polígonos
-    drawRectangle: true, // Dibujar rectángulos
-    drawCircle: true,    // Dibujar círculos
-    cutPolygon: true,    // Recortar polígonos
-    editMode: true,      // Editar geometrías
-    dragMode: true,      // Mover geometrías
-    removalMode: true    // Eliminar geometrías
+    drawMarker: true,
+    drawPolygon: true,
+    drawPolyline: true,
+    drawCircle: true,
+    drawRectangle: true,
+    cutPolygon: true,
+    editMode: true,
+    dragMode: true,
+    removalMode: true
 });
 
-// Permitir interacción sobre las geometrías dibujadas
-map.on('pm:create', function(e) {
-    e.layer.pm.enable();  // Habilita la edición para la nueva geometría
-    console.log('Geometría creada:', e.layer.toGeoJSON());
+// Crear la barra corrediza en el centro
+var sliderContainer = document.createElement('div');
+sliderContainer.style.position = 'absolute';
+sliderContainer.style.top = '50%';
+sliderContainer.style.left = '50%';
+sliderContainer.style.transform = 'translate(-50%, -50%)';
+sliderContainer.style.zIndex = '1000';
+sliderContainer.style.background = 'rgba(255, 255, 255, 0.8)';
+sliderContainer.style.padding = '10px';
+sliderContainer.style.borderRadius = '5px';
+
+var slider = document.createElement('input');
+slider.type = 'range';
+slider.min = '0';
+slider.max = '100';
+slider.value = '50';
+slider.style.width = '200px';
+
+sliderContainer.appendChild(slider);
+document.body.appendChild(sliderContainer);
+
+// Manejar el evento del slider
+slider.addEventListener('input', function() {
+    var opacity = slider.value / 100;
+    baseLayer.setOpacity(1 - opacity);
+    overlayLayer.setOpacity(opacity);
 });
