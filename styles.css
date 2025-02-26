@@ -1,5 +1,12 @@
-/* Archivo styles.css */
+/* Estilo del mapa */
 #map {
-    height: 500px;
+    height: 90vh;
     width: 100%;
+}
+
+/* Título */
+h2 {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    margin: 10px 0;
 }
